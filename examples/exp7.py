@@ -106,10 +106,10 @@ for i in range(51):
 
 delta = 0
 #now rotate it a bit
-for i in range(200):
+for i in range(150):
     if(i < 75):
         delta += 0.01
-    if(i > 125):
+    if(i > 100):
         delta -= 0.01
     p.rotate(delta * 0.01, 1)
     p.rotate(delta * delta * 0.02, 2)
@@ -126,4 +126,4 @@ for i in range(200):
 print(f"len(frames) = {len(frames)}")
 
 
-imageio.mimsave('results/start.gif', frames, fps = 20, palettesize=256)
+imageio.mimsave('results/start.gif', frames, fps = 20, palettesize=64)
