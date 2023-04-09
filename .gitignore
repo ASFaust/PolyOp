@@ -24,4 +24,3 @@ examples/results/*
 build/
 images/
 images/*
-!examples/results/start.webm
