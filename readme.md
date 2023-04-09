@@ -1,9 +1,6 @@
 # `polyop`: Conway Polyhedron Operators
 
-<video width="512" height="512" controls>
-  <source src="examples/results/start.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+<iframe width="512" height="512" src="https://asfaust.de/start.webm" frameborder="0" allowfullscreen></iframe>
 
 This is a Python library written in C++ for working with [Conway polyhedron operators](https://en.wikipedia.org/wiki/Conway_polyhedron_notation).
 
