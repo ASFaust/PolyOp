@@ -19,14 +19,14 @@
 using namespace std;
 
 Polyhedron::Polyhedron(vector<vector<int>> f2v){
-    log("creating polyhedron");
+    // log("creating polyhedron");
     f_count = f2v.size();
-    log("f_count = " + to_string(f_count));
+    // log("f_count = " + to_string(f_count));
     v_count = get_v_count(f2v);
-    log("v_count = " + to_string(v_count));
+    // log("v_count = " + to_string(v_count));
     f2v_ = f2v;
     reset();
-    log("polyhedron creation complete");
+    // log("polyhedron creation complete");
 }
 
 void Polyhedron::reset(){
@@ -41,37 +41,37 @@ void Polyhedron::reset(){
     f2c_ = Mx::Zero(f_count,3);
 }
 
-void Polyhedron::log(string s){
-    if(log_){
-        cout << s << endl;
-    }
-}
+// void Polyhedron::log(string s){
+//     if(log_){
+//         cout << s << endl;
+//     }
+// }
 
 void Polyhedron::check(){
-    log("checking polyhedron");
+    // log("checking polyhedron");
     if(v_count < 4){
-        cout << "v_count < 4" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        //cout << "v_count < 4" << endl;
+        //cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, v_count < 4");
     }
-    log("v_count >= 4");
+    // log("v_count >= 4");
     if(f_count < 4){
-        cout << "f_count < 4" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        //cout << "f_count < 4" << endl;
+        //cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, f_count < 4");
     }
-    log("f_count >= 4");
-    log("getting f2v");
+    // log("f_count >= 4");
+    // log("getting f2v");
     //first some f2v checks ----------------------------------------------------
     auto& f2v = get_f2v();
     if(f2v.size() != f_count){
-        cout << "f2v.size() != f_count" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        //cout << "f2v.size() != f_count" << endl;
+        //cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, f2v.size() != f_count");
     }
-    log("f2v.size() == f_count");
+    //log("f2v.size() == f_count");
     //check vertex usage first
-    log("checking vertex usage");
+    //log("checking vertex usage");
     vector<bool> used(v_count, false);
     for(int f = 0; f < f_count; f++){
         for(int v : f2v[f]){
@@ -80,69 +80,69 @@ void Polyhedron::check(){
     }
     for(int v = 0; v < v_count; v++){
         if(!used[v]){
-            cout << "vertex " << v << " is not used" << endl;
-            cout << string_repr() << endl;
-            throw invalid_argument("Polyhedron check failed");
+            //cout << "vertex " << v << " is not used" << endl;
+            //cout << string_repr() << endl;
+            throw invalid_argument("Polyhedron check failed, a vertex is unused");
         }
     }
-    log("vertex usage ok");
-    log("checking face vertex count and duplicates");
+    //log("vertex usage ok");
+    //log("checking face vertex count and duplicates");
      for(int f = 0; f < f_count; f++){
         if(f2v[f].size() < 3){
-            cout << "face " << f << " has less than 3 vertices" << endl;
-            cout << string_repr() << endl;
-            throw invalid_argument("Polyhedron check failed");
+            //cout << "face " << f << " has less than 3 vertices" << endl;
+            //cout << string_repr() << endl;
+            throw invalid_argument("Polyhedron check failed, a face has less than 3 vertices");
         }
     }
-    log("face vertex count ok");
-    log("checking face vertex duplicates and out of range");
+    // log("face vertex count ok");
+    // log("checking face vertex duplicates and out of range");
     for(int f = 0; f < f_count; f++){
         for(int v : f2v[f]){
             if((v >= v_count) || (v < 0)){
-                cout << "face " << f << " has vertex index out of range" << endl;
-                cout << string_repr() << endl;
-                throw invalid_argument("Polyhedron check failed");
+                // cout << "face " << f << " has vertex index out of range" << endl;
+                // cout << string_repr() << endl;
+                throw invalid_argument("Polyhedron check failed, a face has vertex out of range");
             }
             for(int j = v + 1; j < f2v[f].size(); j++){
                 if(f2v[f][v] == f2v[f][j]){
-                    cout << "face " << f << " has duplicate vertices" << endl;
-                    cout << string_repr() << endl;
-                    throw invalid_argument("Polyhedron check failed");
+                    // cout << "face " << f << " has duplicate vertices" << endl;
+                    // cout << string_repr() << endl;
+                    throw invalid_argument("Polyhedron check failed, a face has duplicate vertices");
                 }
             }
         }
      }
-     log("face vertex duplicates and out of range ok");
+    // log("face vertex duplicates and out of range ok");
     //then some v2f checks ----------------------------------------------------
 
-    log("getting v2f");
+    // log("getting v2f");
     auto& v2f = get_v2f();
-    log("got v2f");
+    // log("got v2f");
     if(v2f.size() != v_count){
-        cout << "v2f.size() != v_count" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        // cout << "v2f.size() != v_count" << endl;
+        // cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, v2f.size() != v_count");
     }
-    log("v2f.size() == v_count");
+    // log("v2f.size() == v_count");
     //then some v2v checks ----------------------------------------------------
-    log("getting v2v");
+    // log("getting v2v");
     auto& v2v = get_v2v();
-    log("got v2v");
-    log("checking v2v size and 3-connectedness");
+    // log("got v2v");
+    // log("checking v2v size and 3-connectedness");
     if(v2v.size() != v_count){
-        cout << "v2v.size() != v_count" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        // cout << "v2v.size() != v_count" << endl;
+        // cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, v2v.size() != v_count");
     }
 
     for(int v = 0; v < v_count; v++){
         if(v2v[v].size() < 3){
             cout << "vertex " << v << " is not 3-connected" << endl;
             cout << string_repr() << endl;
-            throw invalid_argument("Polyhedron check failed");
+            throw invalid_argument("Polyhedron check failed, a vertex is not 3-connected");
         }
     }
-    log("v2v size and 3-connectedness ok");
+    // log("v2v size and 3-connectedness ok");
 
     //check v2v euler formula
     int v2v_count = 0;
@@ -150,27 +150,27 @@ void Polyhedron::check(){
         v2v_count += v2v[v].size();
     }
     if(v_count + f_count - v2v_count/2 != 2){
-        cout << "v2v Euler's formula failed" << endl;
-        cout << v_count << " " << f_count << " " << v2v_count << "/2" << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        // cout << "v2v Euler's formula failed" << endl;
+        // cout << v_count << " " << f_count << " " << v2v_count << "/2" << endl;
+        // cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, v2v Euler's formula failed");
     }
-    log("v2v euler formula ok");
+    // log("v2v euler formula ok");
 
     //then edge checks --------------------------------------------------------
 
-    log("getting edges");
+    // log("getting edges");
     auto& edges = get_edges(); //std::set<Edge>
-    log("got edges");
+    // log("got edges");
     //check eulers formula
     if(v_count + f_count - edges.size() != 2){
-        cout << "Euler's formula failed" << endl;
-        cout << v_count << " " << f_count << " " << edges.size() << endl;
-        cout << string_repr() << endl;
-        throw invalid_argument("Polyhedron check failed");
+        // cout << "Euler's formula failed" << endl;
+        // cout << v_count << " " << f_count << " " << edges.size() << endl;
+        // cout << string_repr() << endl;
+        throw invalid_argument("Polyhedron check failed, Euler's formula failed");
     }
-    log("euler's formula ok");
-    log("check() finished.");
+    // log("euler's formula ok");
+    // log("check() finished.");
 }
 
 string Polyhedron::string_repr(){
@@ -291,10 +291,11 @@ Mx Polyhedron::get_matrix(string type){
         }
         return ret;
     }
-    cout << "unknown matrix type: " << type << endl;
-    cout << "available types: adjacency, laplacian, face_mean, vertex_mean" << endl;
-    cout << "returning empty matrix" << endl;
-    return ret;
+    // cout << "unknown matrix type: " << type << endl;
+    // cout << "available types: adjacency, laplacian, face_mean, vertex_mean" << endl;
+    // cout << "returning empty matrix" << endl;
+    invalid_argument("unkown matrix type; pick one of adjacency, laplacian, face_mean, vertex_mean");
+    // return ret;
 }
 
 vector<int> Polyhedron::select_vertices(int order){

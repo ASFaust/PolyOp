@@ -30,7 +30,7 @@ PYBIND11_MODULE(polyop, m) {
 
         .def("save_obj",&Polyhedron::save_obj,py::arg("filename"),py::arg("overwrite") = false,py::arg("create_folders") = true)
         .def("check",&Polyhedron::check)
-        .def("__str__",&Polyhedron::string_repr)
+	.def("__str__",&Polyhedron::string_repr)
 
         .def("optimizer",&Polyhedron::optimizer)
         .def("render",&Polyhedron::render)
