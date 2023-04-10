@@ -13,23 +13,11 @@ Optimizer::Optimizer(Polyhedron& p_) : polyhedron(p_) {
 
 //set decay and strength
 void Optimizer::set_momentum(double d, double s){
+    if (d <= 0 || d >= 1){
+	std::invalid_argument("decay must be greater than 0 and less than 1");
+    }
     decay = d;
-    if(decay >= 1){
-        cerr << "Decay must be < 1. Setting to 0.99999" << endl;
-        decay = 0.99999;
-    }else if(decay <= 0){
-        cerr << "Decay must be positive. Setting to 0." << endl;
-        decay = 0;
-    }
     strength = s;
-    if(strength <= 0){
-        cerr << "Strength must be greater than 0. Setting to 0.001." << endl;
-        strength = 0.001;
-    }
-    if(strength > 1){
-        cerr << "Strength must be <= 1. Setting to 1." << endl;
-        strength = 1;
-    }
 }
 
 void Optimizer::step(){

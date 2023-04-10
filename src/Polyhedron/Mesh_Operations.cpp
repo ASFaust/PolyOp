@@ -300,8 +300,9 @@ Polyhedron Polyhedron::triangulate(vector<int> face_ids, string mode){
 
 Polyhedron Polyhedron::scrape_off(double t){
     if(t < 0 || t > 1){
-        cout << "t must be between 0 and 1" << endl;
-        return *this;
+	invalid_argument("t must be between 0 and 1");
+        //cout << "t must be between 0 and 1" << endl;
+        //return *this;
     }
 
     vector<vector<int>> r_f2v; //the new faces
@@ -313,15 +314,15 @@ Polyhedron Polyhedron::scrape_off(double t){
         //each original face that is part of the v2f gets 2 vertices added: [n, n+1 % v2f[v].size()]
         //maybe we need v2e? then we could
         auto& v2e = get_v2e();
-        log("scrape_off: v2e got");
-        //cout << "v2e got" << endl;
+	// scrape off, v2e got
+
         //the first f_count entries are the original faces
         r_f2v.resize(f_count, vector<int>());
         int new_v_count = 0;
         for(int v = 0; v < v_count; v++){
             new_v_count += v2e[v].size();
         }
-        log("scrape_off: new_v_count: " + to_string(new_v_count));
+	// scrape off, new_v_count 
 
         Mx new_pos = Mx::Zero(new_v_count, 3);
         int v_it = -1;
@@ -336,14 +337,14 @@ Polyhedron Polyhedron::scrape_off(double t){
             }
             r_f2v.push_back(new_face);
         }
-        log("new faces added");
+	// new faces added
         auto ret = Polyhedron(r_f2v);
         ret.set_pos(new_pos);
         return ret;
     }else{
         //almost the same. but we create 2 new vertices per edge.
         auto& edges = get_edges();
-        log("scrape_off: edges got");
+	// scrape off, edges got(?)
         const Mx& f2c = get_f2c();
 
         //the first f_count entries are still the original faces
@@ -380,7 +381,7 @@ Polyhedron Polyhedron::scrape_off(double t){
             new_pos.row(v2) += t2 * f2c.row(e.f2);
 
         }
-        log("new faces added");
+	// new faces added
         auto ret = Polyhedron(r_f2v);
         ret.set_pos(new_pos);
         return ret;
