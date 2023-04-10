@@ -91,6 +91,11 @@ void Renderer::draw_line(double x0, double y0, double z0, double x1, double y1, 
     int err = dx - dy;
 
     double total_distance = sqrt(dx * dx + dy * dy);
+    if (total_distance == 0) {
+        double color = 1.0 - (z0 - z_min) / (z_max - z_min);
+        draw_point(ix0, iy0, z0, color);
+        return;
+    }
 
     while (true) {
         // Calculate the fractional progress along the line
@@ -139,18 +144,99 @@ void Renderer::calculate_zrange(){ //fills z_max and z_min by going through poly
     }
 }
 
+
 void Renderer::draw_point(int x, int y, double z, double color){
     //dont forget to check the zbuffer at each pixel
-    for (int i = -thickness; i <= thickness; i++){
-        for (int j = -thickness; j <= thickness; j++){
-            if (i * i + j * j <= sq_thickness){
-                if (z < zbuffer(y + i, x + j)){
-                    image(y + i, x + j) = color;
-                    zbuffer(y + i, x + j) = z;
+    //also apply dof: draw distant lines blurred
+    int max_dof = 5; //max kernel size. must be odd.
+
+    double dof = 1.0 - (z - z_min) / (z_max - z_min);
+    int kernel_size = (int)(dof * max_dof);
+    MatrixXd& draw_point = get_draw_point(kernel_size); //predrawn blurred point of given thickness and blurred with given kernel size
+    //then apply the draw_point to the image, but do a z test for each pixel
+    for (int i = 0; i < draw_point.rows(); i++){
+        int x_ = x + i - draw_point.rows() / 2;
+        if (x_ < 0 && x_ >= width){
+            continue;
+        }
+        for (int j = 0; j < draw_point.cols(); j++){
+            int y_ = y + j - draw_point.cols() / 2;
+            if (y_ >= 0 && y_ < height){
+                if (z < zbuffer(x_, y_)){
+                    image(x_, y_) = draw_point(i, j);
+                    zbuffer(x_, y_) = z;
                 }
             }
         }
     }
+}
+
+MatrixXd& Renderer::get_draw_point(int kernel_size){
+    //we have a map<int, MatrixXd> draw_points;
+    //where the key is the kernel_size
+
+    //if the kernel_size is not in the map, create a new MatrixXd
+    //and store it in the map
+    //then return the MatrixXd
+    double eps = 1e-6;
+    if (draw_points.count(kernel_size) == 0) {
+        int total_matrix_size = (kernel_size * 2) + (thickness * 2 + 1); //the total diameter of the matrix that we need.
+        MatrixXd point = MatrixXd::Zero(total_matrix_size, total_matrix_size);
+        for (int i = -thickness; i <= thickness; i++){
+            for (int j = -thickness; j <= thickness; j++){
+                if (i * i + j * j <= thickness * thickness){
+                    int x = i + thickness + kernel_size;
+                    int y = j + thickness + kernel_size;
+                    point(x,y) = 1.0;
+                }
+            }
+        }
+        if(kernel_size > 0){
+            double sigma = kernel_size / 3.0;
+            //then blur the point with a gaussian kernel
+            MatrixXd kernel = MatrixXd::Zero(kernel_size * 2 + 1, kernel_size * 2 + 1);
+            for (int i = -kernel_size; i <= kernel_size; i++){
+                for (int j = -kernel_size; j <= kernel_size; j++){
+                    kernel(i + kernel_size, j + kernel_size) = exp(-(i * i + j * j) / (2 * sigma * sigma));
+                }
+            }
+            kernel /= kernel.sum();
+            //then convolve the point with the kernel
+            //the point is already zero-padded
+            for(int i = 0; i < total_matrix_size; i++){
+                for(int j = 0; j < total_matrix_size; j++){
+                    double sum = 0;
+                    double count = 0;
+                    for(int k = -kernel_size; k <= kernel_size; k++){
+                        for(int l = -kernel_size; l <= kernel_size; l++){
+                            int x = i + k;
+                            int y = j + l;
+                            if (x >= 0 && x < total_matrix_size && y >= 0 && y < total_matrix_size){
+                                sum += point(x, y) * kernel(k + kernel_size, l + kernel_size);
+                                count += kernel(k + kernel_size, l + kernel_size);
+                            }
+                        }
+                    }
+                    if (count > eps){
+                        sum /= count;
+                        if(sum > 1.0){
+                            sum = 1.0;
+                        }
+                        if(sum > eps){
+                            point(i, j) = sum;
+                        }else{
+                            point(i, j) = 0;
+                        }
+                    }else{
+                        point(i, j) = 0;
+                    }
+                }
+            }
+        }
+        cout << point << endl;
+        draw_points[kernel_size] = point;
+    }
+    return draw_points[kernel_size];
 }
 
 void Renderer::downsampling(){
@@ -174,3 +260,5 @@ void Renderer::downsampling(){
         }
     }
 }
+
+
