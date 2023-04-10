@@ -173,21 +173,21 @@ void Polyhedron::check(){
     // log("check() finished.");
 }
 
-// string Polyhedron::string_repr(){
-//     stringstream ss;
-//     auto& f2v = get_f2v();
-//     ss << "v_count: " << v_count << endl;
-//     ss << "f_count: " << f_count << endl;
-//     ss << "f2v: " << endl;
-//     for(int f = 0; f < f_count; f++){
-//         ss << f << ": ";
-//         for(int v : f2v[f]){
-//             ss << v << " ";
-//         }
-//         ss << endl;
-//     }
-//     return ss.str();
-// }
+string Polyhedron::string_repr(){
+    stringstream ss;
+    auto& f2v = get_f2v();
+    ss << "v_count: " << v_count << endl;
+    ss << "f_count: " << f_count << endl;
+    ss << "f2v: " << endl;
+    for(int f = 0; f < f_count; f++){
+        ss << f << ": ";
+        for(int v : f2v[f]){
+            ss << v << " ";
+        }
+        ss << endl;
+    }
+    return ss.str();
+}
 
 int Polyhedron::fix_vertex_index(int ix){
     while(ix < 0){
