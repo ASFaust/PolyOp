@@ -23,7 +23,6 @@ class Renderer{
         void draw_point(int x, int y, double z, double color); //draws a point to the zbuffer with thickness :)
         void downsampling(); //fills image_downsampled, level is the downsampling factor, aka aa_level
         void calculate_zrange(); //fills z_max and z_min
-        Eigen::MatrixXd& get_draw_point(int kernel_size);
         Eigen::MatrixXd image, zbuffer, image_downsampled;
 
         Polyhedron &poly;
@@ -39,7 +38,6 @@ class Renderer{
         double z_max, z_min;
         int aa_level;
         int num_threads; // currently not used
-        map<int, MatrixXd> draw_points; //stores the points to draw for each thread
 };
 
 #endif
