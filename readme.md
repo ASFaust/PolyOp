@@ -1,6 +1,6 @@
 # `polyop`: Conway Polyhedron Operators
 
-![Top Text](https://i.imgur.com/4HiV5y8.gif)
+![Top Text](https://github.com/ASFaust/PolyOp/blob/main/start.gif)
 
 This is a Python library written in C++ for working with [Conway polyhedron operators](https://en.wikipedia.org/wiki/Conway_polyhedron_notation).
 
