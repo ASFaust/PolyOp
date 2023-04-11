@@ -5,11 +5,35 @@
 This is a Python library written in C++ for working with [Conway polyhedron operators](https://en.wikipedia.org/wiki/Conway_polyhedron_notation).
 
 ## Installation
-To install the library, run the following commands in the root directory of this repository:
+### Prerequisites
+If you dont have `Python`, `pip` and/or a `C++ compiler installed, follow these steps:
+
+#### Ubuntu/Debian
+``` 
+sudo apt install python3 python3-pip build-essential
 ```
-pip install numpy setuptools pybind11 imageio opencv-python
+#### Windows
+Install [Python 3](https://www.python.org/downloads/windows/) and [pip](https://pip.pypa.io/en/stable/installing/).
+Then install [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019) and make sure to select the C++ build tools.
+
+#### MacOS
+Install [Python 3](https://www.python.org/downloads/mac-osx/) and [pip](https://pip.pypa.io/en/stable/installing/).
+Then install [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12) and the command line tools.
+
+### Installing the library
+Open a terminal and run the following command in the root directory of the project:
+
+```
+pip install setuptools pybind11
 pip install .
 ```
+
+To run the examples, run the following command to install the required dependencies:
+
+```
+pip install imageio opencv-python
+```
+
 ## Features 
 
 ### Seed polyhedra
