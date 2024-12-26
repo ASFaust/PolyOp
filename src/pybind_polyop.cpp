@@ -1,6 +1,7 @@
 #include "Polyhedron.h"
 #include "Optimizer.h"
 #include "CirclePackingRepr.h"
+#include "DetachedFacesOpt.h"
 
 #include "shapes.h"
 
@@ -79,6 +80,11 @@ PYBIND11_MODULE(polyop, m) {
         .def("step",&CirclePackingRepr::step)
         .def("get_pos",&CirclePackingRepr::get_pos)
         .def("draw",&CirclePackingRepr::draw,py::arg("res") = 100,py::arg("thickness") = 0.01);
+
+    py::class_<DetachedFacesOpt>(m, "DetachedFacesOpt")
+        .def(py::init<Polyhedron&>())
+        .def("step",&DetachedFacesOpt::step);
+
 
     m.def("prism",&prism,py::arg("sides"));
     m.def("antiprism",&antiprism,py::arg("sides"));

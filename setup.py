@@ -18,6 +18,7 @@ ext_modules = [
             'src/Optimizer.cpp',
             'src/Renderer.cpp',
             'src/CirclePackingRepr.cpp',
+            'src/DetachedFacesOpt.cpp',
         ],
         include_dirs=[
             "include/",

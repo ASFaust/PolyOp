@@ -4,7 +4,7 @@ import numpy as np
 
 
 def test():
-    a = antiprism(5).gyro()
+    a = antiprism(5)
 
     a.align(steps=1000)
 
