@@ -132,3 +132,4 @@ Mx& Polyhedron::get_force(){
     force_.setZero();
     return force_;
 }
+

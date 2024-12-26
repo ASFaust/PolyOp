@@ -1,5 +1,6 @@
 #include "Polyhedron.h"
 #include "Optimizer.h"
+#include "CirclePackingRepr.h"
 
 #include "shapes.h"
 
@@ -51,14 +52,15 @@ PYBIND11_MODULE(polyop, m) {
         .def("realize_spectral",&Polyhedron::realize_spectral,py::arg("matrix") = Mx::Zero(0,0),py::arg("indices") = non)
         .def("get_matrix",&Polyhedron::get_matrix)
         .def("hang_axis",&Polyhedron::hang_axis,py::arg("axis") = 2)
-        .def("set_log",&Polyhedron::set_log);
+        .def("set_log",&Polyhedron::set_log)
+        .def_readonly("v_count",&Polyhedron::v_count)
+        .def("set_pos",&Polyhedron::set_pos);
+
 
         //.def("spherical",&Polyhedron::spherical)
         //.def("flatten_faces",&Polyhedron::flatten_faces)
         //.def("get_pos",&Polyhedron::get_pos)
-        //.def("set_pos",&Polyhedron::set_pos)
         //.def_readonly("faces",&Polyhedron::f2v)
-        //.def_readonly("v_count",&Polyhedron::v_count)
         //.def("flip_winding",&Polyhedron::flip_winding)
         //.def("face_mean",&Polyhedron::face_mean)
         //.def("vertex_mean",&Polyhedron::vertex_mean)
@@ -71,6 +73,12 @@ PYBIND11_MODULE(polyop, m) {
     py::class_<Optimizer>(m, "Optimizer")
         .def("set_momentum",&Optimizer::set_momentum)
         .def("step",&Optimizer::step);
+
+    py::class_<CirclePackingRepr>(m, "CirclePackingRepr")
+        .def(py::init<Polyhedron&, vector<int>>())
+        .def("step",&CirclePackingRepr::step)
+        .def("get_pos",&CirclePackingRepr::get_pos)
+        .def("draw",&CirclePackingRepr::draw,py::arg("res") = 100,py::arg("thickness") = 0.01);
 
     m.def("prism",&prism,py::arg("sides"));
     m.def("antiprism",&antiprism,py::arg("sides"));

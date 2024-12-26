@@ -16,7 +16,8 @@ ext_modules = [
             'src/Polyhedron/Move_To.cpp',
             'src/Edge.cpp',
             'src/Optimizer.cpp',
-            'src/Renderer.cpp'
+            'src/Renderer.cpp',
+            'src/CirclePackingRepr.cpp',
         ],
         include_dirs=[
             "include/",

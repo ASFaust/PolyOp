@@ -479,6 +479,12 @@ void Polyhedron::sort_v2f(){
 }
 
 const vector<vector<int>>& Polyhedron::get_v2v(){
+    /*
+    This function returns all neighbors of a vertex.
+    it is a representation of all edges, but with the
+
+    */
+
     if(v2v_.size() == 0){
         for(int i = 0; i < v_count; i++){
             v2v_.push_back({});

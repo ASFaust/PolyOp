@@ -99,7 +99,11 @@ class Polyhedron{
         //rendering functions -----------------------------------------
         MatrixXd render(int res, int thickness, int aa_factor);
 
-    private:
+        const Edges& get_edges(); //Edges are unordered_set<Edges..., see Edges.h.
+        const vector<vector<int>>& get_v2v();
+
+
+    //private:
         //the data ----------------------------------------------------
         vector<vector<int>> f2v_;
         vector<vector<int>> v2f_;
@@ -128,8 +132,6 @@ class Polyhedron{
         const vector<vector<int>>& get_sorted_f2v();
         const vector<vector<int>>& get_v2f();
         const vector<vector<int>>& get_sorted_v2f();
-        const vector<vector<int>>& get_v2v();
-        const Edges& get_edges(); //Edges are unordered_set<Edges..., see Edges.h.
         const vector<vector<Edge>>& get_f2e();
         const vector<vector<Edge>>& get_v2e();
         const Mx& get_f2n();
