@@ -16,9 +16,7 @@ inline Polyhedron cone(int sides){
     f2v.push_back(bottom_face);
     auto ret = Polyhedron(f2v);
     ret.realize_spectral(ret.get_matrix("face_mean"),{-2,-3,-4});
-    //ret.hang_axis(2); //noo dont hang axis haha
     ret.normalize();
-    //cones need to be realized with the hanging vertex method
     return ret;
 }
 

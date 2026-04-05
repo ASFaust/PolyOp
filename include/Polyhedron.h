@@ -29,7 +29,6 @@ using namespace Eigen;
 typedef Vector3d vec;
 typedef Matrix<double,Dynamic,Dynamic,RowMajor> Mx;
 
-class Optimizer;
 class Renderer;
 
 //the load operation should not be class method because of the readonly nature of the v_count and f_count vars.
@@ -81,9 +80,6 @@ class Polyhedron{
         Mx get_pos();
         void set_pos(Mx& pos);
 
-        //optimizer creation. tries to speed up the optimization functions, but is not necessary.
-        Optimizer optimizer();
-
         //weird functions --------------------------------------------
         Mx get_planar_drawing(int v0,int axis);
 
@@ -102,6 +98,7 @@ class Polyhedron{
         const Edges& get_edges(); //Edges are unordered_set<Edges..., see Edges.h.
         const vector<vector<int>>& get_v2v();
 
+        void compute_automorphisms();
 
     //private:
         //the data ----------------------------------------------------
@@ -116,6 +113,7 @@ class Polyhedron{
         vec center_;
         int v_count;
         int f_count;
+        vector<vector<int>> _automorphisms;
 
         //state variables ---------------------------------------------
         bool f2c_computed;
@@ -153,7 +151,6 @@ class Polyhedron{
 
 
         //the force class is a friend of the polyhedron class
-        friend class Optimizer;
         friend class Renderer;
 
         //this is internally used during the spectral realization

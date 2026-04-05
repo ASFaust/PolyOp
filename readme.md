@@ -102,3 +102,10 @@ p.save_obj('notacube.obj')
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+##
+
+The circle packing was a disappointment. 
+We will now go into the direction of permutation groups: we will find permutation matrices for the adjacency matrices
+of the polyhedra, and from these recover 

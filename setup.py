@@ -14,18 +14,16 @@ ext_modules = [
             'src/Polyhedron/Mesh_Operations.cpp',
             'src/Polyhedron/Position_Operations.cpp',
             'src/Polyhedron/Move_To.cpp',
+            'src/Polyhedron/automorphism.cpp',
             'src/Edge.cpp',
-            'src/Optimizer.cpp',
             'src/Renderer.cpp',
-            'src/CirclePackingRepr.cpp',
-            'src/DetachedFacesOpt.cpp',
         ],
         include_dirs=[
             "include/",
             "include/Eigen/"
         ],
         language='c++',
-        #extra_compile_args=['-Wno-sign-compare', '-Wno-reorder', '-O3', '-std=c++17']
+            extra_compile_args=['-O3']
         ),
 ]
 

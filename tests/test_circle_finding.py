@@ -5,8 +5,6 @@ import cv2 as cv
 def run():
     n_points = 4
     points = (np.random.randn(n_points, 2))
-    center = np.random.randn(2)
-    radius = np.random.rand() * 2 + 2
     #put all the points on the circle
     #for i in range(n_points):
     #    points[i] = center + radius * (points[i] - center) / np.linalg.norm(points[i] - center)
@@ -32,9 +30,14 @@ def run():
             forces += (point - center) * (distance - radius) / distance
 
         #we add a dynamic damping to the forces to avoid oscillations. the damping is proportional to the scalar product of the forces
-        damp_factor = np.dot(forces, last_forces) / (np.linalg.norm(forces) * np.linalg.norm(last_forces) + 1e-6) > 0
+        damp_factor = np.dot(forces, last_forces) > 0
+        if damp_factor:
+            damp_factor = 1.0
+        else:
+            damp_factor = 0.5
 
         last_forces *= damp_factor
+        #last_forces *= 0.9
         last_forces += forces / n_points
         center += last_forces
         print(f"{i:03d} magnitude of forces: {np.linalg.norm(last_forces)}")

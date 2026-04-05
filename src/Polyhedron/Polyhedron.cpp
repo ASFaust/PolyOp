@@ -1,6 +1,5 @@
 #include "Polyhedron.h"
 #include "Edge.h"
-#include "Optimizer.h"
 #include "Renderer.h"
 #include <iostream>
 #include <vector>
@@ -40,12 +39,6 @@ void Polyhedron::reset(){
     f2n_ = Mx::Zero(f_count,3);
     f2c_ = Mx::Zero(f_count,3);
 }
-
-// void Polyhedron::log(string s){
-//     if(log_){
-//         cout << s << endl;
-//     }
-// }
 
 void Polyhedron::check(){
     // log("checking polyhedron");
@@ -332,34 +325,7 @@ vector<int> Polyhedron::select_faces(int order){
     return ret;
 }
 
-const Edges& Polyhedron::get_edges() {
-    if(edges_.size() == 0){
-        auto& f2v = get_sorted_f2v();
-        auto& v2f = get_v2f(); //can't be sorted - would result in a call loop
-        for (int i = 0; i < f2v.size(); i++) {
-            const std::vector<int>& face = f2v[i];
-            int num_verts = face.size();
-            for (int j = 0; j < num_verts; j++) {
-                int v1 = face[j];
-                int v2 = face[(j+1) % num_verts];
-                // This edge is an interior edge
-                int f1 = i;
-                int f2 = -1;
-                for (int k = 0; k < v2f[v2].size(); k++) {
-                    int other_face = v2f[v2][k];
-                    if (other_face != f1 && std::find(f2v[other_face].begin(), f2v[other_face].end(), v1) != f2v[other_face].end()) {
-                        f2 = other_face;
-                        break;
-                    }
-                }
-                if (f2 != -1) {
-                    edges_.emplace(v1, v2, f1, f2);
-                }
-            }
-        }
-    }
-    return edges_;
-}
+
 
 const vector<vector<int>>& Polyhedron::get_v2f(){
     if(v2f_.size() == 0){
@@ -392,22 +358,7 @@ const vector<vector<int>>& Polyhedron::get_sorted_f2v(){
     return f2v_;
 }
 
-const vector<vector<Edge>>& Polyhedron::get_f2e(){
-    if(f2e_.size() == 0){
-        auto& edges = get_edges();
-        auto& f2v = get_f2v();
-        f2e_.reserve(f_count);
-        for(int i = 0; i < f_count; i++){
-            f2e_.push_back({});
-            f2e_.back().reserve(f2v[i].size());
-        }
-        for(auto& edge : edges) {
-            f2e_[edge.f1].push_back(Edge(edge.v1,edge.v2,edge.f2,edge.f2));
-            f2e_[edge.f2].push_back(Edge(edge.v1,edge.v2,edge.f1,edge.f1));
-        }
-    }
-    return f2e_;
-}
+
 
 void Polyhedron::sort_f2v() {
     if(f2v_sorted){
@@ -479,12 +430,6 @@ void Polyhedron::sort_v2f(){
 }
 
 const vector<vector<int>>& Polyhedron::get_v2v(){
-    /*
-    This function returns all neighbors of a vertex.
-    it is a representation of all edges, but with the
-
-    */
-
     if(v2v_.size() == 0){
         for(int i = 0; i < v_count; i++){
             v2v_.push_back({});
@@ -509,6 +454,52 @@ const vector<vector<int>>& Polyhedron::get_v2v(){
         }
     }
     return v2v_;
+}
+
+const Edges& Polyhedron::get_edges() {
+    if(edges_.size() == 0){
+        auto& f2v = get_sorted_f2v();
+        auto& v2f = get_v2f(); //can't be sorted - would result in a call loop
+        for (int i = 0; i < f2v.size(); i++) {
+            const std::vector<int>& face = f2v[i];
+            int num_verts = face.size();
+            for (int j = 0; j < num_verts; j++) {
+                int v1 = face[j];
+                int v2 = face[(j+1) % num_verts];
+                // This edge is an interior edge
+                int f1 = i;
+                int f2 = -1;
+                for (int k = 0; k < v2f[v2].size(); k++) {
+                    int other_face = v2f[v2][k];
+                    if (other_face != f1 && std::find(f2v[other_face].begin(), f2v[other_face].end(), v1) != f2v[other_face].end()) {
+                        f2 = other_face;
+                        break;
+                    }
+                }
+                if (f2 != -1) {
+                    edges_.emplace(v1, v2, f1, f2);
+                }
+            }
+        }
+    }
+    return edges_;
+}
+
+const vector<vector<Edge>>& Polyhedron::get_f2e(){
+    if(f2e_.size() == 0){
+        auto& edges = get_edges();
+        auto& f2v = get_f2v();
+        f2e_.reserve(f_count);
+        for(int i = 0; i < f_count; i++){
+            f2e_.push_back({});
+            f2e_.back().reserve(f2v[i].size());
+        }
+        for(auto& edge : edges) {
+            f2e_[edge.f1].push_back(Edge(edge.v1,edge.v2,edge.f2,edge.f2));
+            f2e_[edge.f2].push_back(Edge(edge.v1,edge.v2,edge.f1,edge.f1));
+        }
+    }
+    return f2e_;
 }
 
 const vector<vector<Edge>>& Polyhedron::get_v2e(){
@@ -613,10 +604,6 @@ Polyhedron Polyhedron::flip_winding(){
         reverse(f.begin(), f.end());
     }
     return *this;
-}
-
-Optimizer Polyhedron::optimizer(){
-    return Optimizer(*this);
 }
 
 void Polyhedron::set_f2v_sorted(bool b){

@@ -1,7 +1,4 @@
 #include "Polyhedron.h"
-#include "Optimizer.h"
-#include "CirclePackingRepr.h"
-#include "DetachedFacesOpt.h"
 
 #include "shapes.h"
 
@@ -34,7 +31,6 @@ PYBIND11_MODULE(polyop, m) {
         .def("check",&Polyhedron::check)
 	.def("__str__",&Polyhedron::string_repr)
 
-        .def("optimizer",&Polyhedron::optimizer)
         .def("render",&Polyhedron::render)
 
         .def("to_origin",&Polyhedron::to_origin)
@@ -55,7 +51,8 @@ PYBIND11_MODULE(polyop, m) {
         .def("hang_axis",&Polyhedron::hang_axis,py::arg("axis") = 2)
         .def("set_log",&Polyhedron::set_log)
         .def_readonly("v_count",&Polyhedron::v_count)
-        .def("set_pos",&Polyhedron::set_pos);
+        .def("set_pos",&Polyhedron::set_pos)
+        .def("compute_automorphisms", &Polyhedron::compute_automorphisms);
 
 
         //.def("spherical",&Polyhedron::spherical)
@@ -71,19 +68,7 @@ PYBIND11_MODULE(polyop, m) {
         //.def("get_planar_drawing",&Polyhedron::get_planar_drawing)
         //.def_readwrite("pos",&Polyhedron::_pos)
         //.def("scrape_off",&Polyhedron::scrape_off);
-    py::class_<Optimizer>(m, "Optimizer")
-        .def("set_momentum",&Optimizer::set_momentum)
-        .def("step",&Optimizer::step);
 
-    py::class_<CirclePackingRepr>(m, "CirclePackingRepr")
-        .def(py::init<Polyhedron&, vector<int>>())
-        .def("step",&CirclePackingRepr::step)
-        .def("get_pos",&CirclePackingRepr::get_pos)
-        .def("draw",&CirclePackingRepr::draw,py::arg("res") = 100,py::arg("thickness") = 0.01);
-
-    py::class_<DetachedFacesOpt>(m, "DetachedFacesOpt")
-        .def(py::init<Polyhedron&>())
-        .def("step",&DetachedFacesOpt::step);
 
 
     m.def("prism",&prism,py::arg("sides"));
